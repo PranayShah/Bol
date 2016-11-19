@@ -1,0 +1,50 @@
+{
+  "project_info": {
+    "project_number": "656271675165",
+    "firebase_url": "https://bolo-2b58d.firebaseio.com",
+    "project_id": "bolo-2b58d",
+    "storage_bucket": "bolo-2b58d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:656271675165:android:777c749c78be6784",
+        "android_client_info": {
+          "package_name": "in.uchneech.bol"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "656271675165-sfkrnh80psgfon1gocu7qf69979i3qpk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.uchneech.bol",
+            "certificate_hash": "C977A832164FA035995A2AF4F116850EBC57DC0A"
+          }
+        },
+        {
+          "client_id": "656271675165-rkrt6bkmqhtvanj2heebtubpsuj2u8i3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKnP7ii8htquEwU05I4fdLfJp5e7Q2Tlc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
