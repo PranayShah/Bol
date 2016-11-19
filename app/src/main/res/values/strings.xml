@@ -2,4 +2,8 @@
     <string name="app_name">Bol.</string>
     <string name="uuid">uuid</string>
     <string name="no_connection">No connection, yo!</string>
+    <string name="post_a_story">Post a story</string>
+    <string name="no_internet_connection">You are not connected to the internet</string>
+    <string name="play_story">Listen to this story</string>
+    <string name="favourite_story">Mark it as favourite</string>
 </resources>

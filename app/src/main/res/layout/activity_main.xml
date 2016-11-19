@@ -27,10 +27,15 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:id="@+id/button2"
-        android:onClick="postStory" />
+        android:onClick="postStory"
+        android:contentDescription="@string/post_a_story"/>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="@string/no_connection"
-        android:enabled="false"/>
+        android:visibility="invisible"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:contentDescription="@string/no_internet_connection"/>
 </RelativeLayout>
