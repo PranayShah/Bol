@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -23,17 +24,15 @@ import static com.firebase.ui.auth.ui.AcquireEmailHelper.RC_SIGN_IN;
 
 public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
     private SwipeRefreshLayout mySwipeRefreshLayout;
-
+    FirebaseDatabase firebaseDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        myToolbar.inflateMenu(R.menu.main_menu);
         setSupportActionBar(myToolbar);
         mySwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
         mySwipeRefreshLayout.setOnRefreshListener(
@@ -51,17 +50,18 @@ public class MainActivity extends AppCompatActivity {
         boolean isConnected = activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
         if ()*/
-        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        DatabaseReference mRef = FirebaseDatabase.getInstance().getReference().child("thoughts");
-        mAdapter = new FirebaseRecyclerAdapter<Thought, ThoughtHolder>(Thought.class, R.layout.feed_item, ThoughtHolder.class, mRef) {
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference mRef = firebaseDatabase.getReference().child("thoughts");
+        RecyclerView.Adapter mAdapter = new FirebaseRecyclerAdapter<Thought, ThoughtHolder>(Thought.class, R.layout.feed_item, ThoughtHolder.class, mRef) {
             @Override
             public void populateViewHolder(ThoughtHolder chatMessageViewHolder, final Thought chatMessage, int position) {
                 chatMessageViewHolder.mView.findViewById(R.id.play_button).setOnClickListener(new mediaHandler(chatMessage, position));
@@ -103,6 +103,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate menu from menu resource (res/menu/main)
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.refresh:
@@ -119,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void refresh () {
-
+        firebaseDatabase.goOffline();
+        firebaseDatabase.goOnline();
     }
 }

@@ -7,4 +7,11 @@
     <string name="play_story">Listen to this story</string>
     <string name="favourite_story">Mark it as favourite</string>
     <string name="Refresh">refresh</string>
+    <string name="upload">Upload</string>
+    <string name="upvotes">Upvote the story</string>
+    <string name="downvotes">Downvote the story</string>
+    <string name="stop_recording">Stop recording</string>
+    <string name="start_recording">Start recording</string>
+    <string name="stop_playing">Stop playing</string>
+    <string name="start_playing">Start playing</string>
 </resources>

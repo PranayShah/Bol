@@ -8,7 +8,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,37 +37,47 @@ public class RecordingActivity extends AppCompatActivity {
     private static final String LOG_TAG = "AudioRecordTest";
     private static String mFileName = null;
 
-    private RecordButton mRecordButton = null;
     private MediaRecorder mRecorder = null;
 
-    private PlayButton   mPlayButton = null;
     private MediaPlayer   mPlayer = null;
     Button mUploadButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // my_child_toolbar is defined in the layout file
+        Toolbar myChildToolbar =
+                (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myChildToolbar);
+
+        // Get a support ActionBar corresponding to this toolbar
+        ActionBar ab = getSupportActionBar();
+
+        // Enable the Up button
+        if (ab != null) {
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
+
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
             finish();
-            return;
         }
         else {
             LinearLayout ll = new LinearLayout(this);
-            mRecordButton = new RecordButton(this);
+            RecordButton mRecordButton = new RecordButton(this);
             ll.addView(mRecordButton,
                     new LinearLayout.LayoutParams(
                             ViewGroup.LayoutParams.WRAP_CONTENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT,
                             0));
-            mPlayButton = new PlayButton(this);
+            PlayButton mPlayButton = new PlayButton(this);
             ll.addView(mPlayButton,
                     new LinearLayout.LayoutParams(
                             ViewGroup.LayoutParams.WRAP_CONTENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT,
                             0));
             mUploadButton = new Button(this);
-            mUploadButton.setText("Upload");
+            mUploadButton.setText(R.string.upload);
             ll.addView(mUploadButton,
                     new LinearLayout.LayoutParams(
                             ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -181,7 +193,7 @@ public class RecordingActivity extends AppCompatActivity {
                         Uri downloadUrl = taskSnapshot.getDownloadUrl();
                         FirebaseAuth auth = FirebaseAuth.getInstance();
                         if (auth.getCurrentUser() != null) {
-                            ref.child("thoughts").child(key).setValue(new Thought(auth.getCurrentUser().getEmail(), auth.getCurrentUser().getUid(),uuid ,downloadUrl.toString()), new DatabaseReference.CompletionListener() {
+                            ref.child("thoughts").child(key).setValue(new Thought(auth.getCurrentUser().getEmail(), auth.getCurrentUser().getUid(),uuid , downloadUrl != null ? downloadUrl.toString() : null), new DatabaseReference.CompletionListener() {
                                 @Override
                                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                     if (databaseError != null) {
@@ -204,9 +216,9 @@ public class RecordingActivity extends AppCompatActivity {
             public void onClick(View v) {
                 onRecord(mStartRecording);
                 if (mStartRecording) {
-                    setText("Stop recording");
+                    setText(R.string.stop_recording);
                 } else {
-                    setText("Start recording");
+                    setText(R.string.start_recording);
                 }
                 mStartRecording = !mStartRecording;
             }
@@ -214,7 +226,7 @@ public class RecordingActivity extends AppCompatActivity {
 
         public RecordButton(Context ctx) {
             super(ctx);
-            setText("Start recording");
+            setText(R.string.start_recording);
             setOnClickListener(clicker);
         }
     }
@@ -226,9 +238,9 @@ public class RecordingActivity extends AppCompatActivity {
             public void onClick(View v) {
                 onPlay(mStartPlaying);
                 if (mStartPlaying) {
-                    setText("Stop playing");
+                    setText(R.string.stop_playing);
                 } else {
-                    setText("Start playing");
+                    setText(R.string.start_playing);
                 }
                 mStartPlaying = !mStartPlaying;
             }
@@ -236,7 +248,7 @@ public class RecordingActivity extends AppCompatActivity {
 
         public PlayButton(Context ctx) {
             super(ctx);
-            setText("Start playing");
+            setText(R.string.start_playing);
             setOnClickListener(clicker);
         }
     }
