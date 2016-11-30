@@ -31,9 +31,9 @@ class mediaHandler implements View.OnClickListener, MediaPlayer.OnCompletionList
         nMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         nMediaPlayer.setOnPreparedListener(this);
         nMediaPlayer.setOnErrorListener(this);
-        Log.e(LOG_TAG, Boolean.toString(nMediaPlayer.isPlaying()));
-        if (currentSource != null){Log.e(LOG_TAG, currentSource);}
-        Log.e(LOG_TAG, chatMessage.downloadUri);
+        Log.i(LOG_TAG, Boolean.toString(nMediaPlayer.isPlaying()));
+        if (currentSource != null){Log.i(LOG_TAG, currentSource);}
+        Log.i(LOG_TAG, chatMessage.downloadUri);
         if (!nMediaPlayer.isPlaying()) {
             if (currentSource!=null && chatMessage.downloadUri.contentEquals(currentSource)) {
                 imageButton.setImageResource(R.drawable.ic_pause_black_24dp);
