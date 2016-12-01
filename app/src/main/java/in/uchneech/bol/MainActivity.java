@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().getAttributes().windowAnimations = R.style.Fade;
         setContentView(R.layout.activity_main);
         mySwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
         mySwipeRefreshLayout.setOnRefreshListener(
@@ -68,8 +69,10 @@ public class MainActivity extends AppCompatActivity {
     public void postStory (View v) {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
+            //overridePendingTransition(R.anim.fadein, R.anim.fadeout);
             startActivity(new Intent(this, RecordingActivity.class));
         } else {
+            //overridePendingTransition(R.anim.fadein, R.anim.fadeout);
             startActivityForResult(
                     AuthUI.getInstance()
                             .createSignInIntentBuilder()
@@ -84,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
+                //overridePendingTransition(R.anim.fadein, R.anim.fadeout);
                 startActivity(new Intent(this, RecordingActivity.class));
                 finish();
             } else {

@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "656271675165-d3bpoe50ig3fndnum9a237ib2matc911.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.uchneech.bol",
+            "certificate_hash": "84C3ECA496E2FFBC2DF2F9FA377782863FA36157"
+          }
+        },
+        {
           "client_id": "656271675165-sfkrnh80psgfon1gocu7qf69979i3qpk.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
