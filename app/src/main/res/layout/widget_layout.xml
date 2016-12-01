@@ -1,20 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
-    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/widget_list_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:loopViews="true" />
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/empty_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:textColor="#ffffff"
-        android:textStyle="bold"
-        android:text="@string/empty_view_text"
-        android:contentDescription="@string/empty_view_text"
-        android:textSize="20sp" />
-</FrameLayout>
+<RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_margin="10dp"
+    android:layout_centerVertical="false"
+    android:layout_centerHorizontal="false"
+    android:layout_centerInParent="false">
+    <ImageButton
+        android:id="@+id/play_button"
+        android:src="@drawable/ic_play_arrow_black_24dp"
+        android:tint="@color/colorAccent"
+        android:background="@color/tw__transparent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:contentDescription="@string/play_story"
+        android:layout_alignParentStart="true" />
+    <ImageButton
+        android:id="@+id/shuffle"
+        android:src="@drawable/ic_favorite_black_24dp"
+        android:tint="@color/colorAccent"
+        android:background="@color/tw__transparent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:contentDescription="@string/play_story"
+        android:layout_alignParentEnd="true" />
+</RelativeLayout>
