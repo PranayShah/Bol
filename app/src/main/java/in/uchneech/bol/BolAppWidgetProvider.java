@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -25,7 +26,7 @@ import java.util.Random;
 public class BolAppWidgetProvider extends AppWidgetProvider {
     private static final String SHUFFLE_ACTION = "in.uchneech.bol.SHUFFLE_ACTION";
     private static final String PLAY_ACTION = "in.uchneech.bol.PLAY_ACTION";
-
+    static RemoteViews views;
     @Override
     public void onEnabled(Context context) {
         super.onEnabled(context);
@@ -34,8 +35,8 @@ public class BolAppWidgetProvider extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // update each of the app widgets with the remote adapter
-        for (int i = 0; i < appWidgetIds.length; ++i) {
-            RemoteViews views;
+        for (int appWidgetId : appWidgetIds) {
+
             views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
             Intent playIntent = new Intent(context, mediaService.class);
             playIntent.setAction(PLAY_ACTION);
@@ -45,26 +46,34 @@ public class BolAppWidgetProvider extends AppWidgetProvider {
             PendingIntent shuffleIntentPending = PendingIntent.getService(context, 0, shuffleIntent, 0);
             views.setOnClickPendingIntent(R.id.play_button, playIntentPending);
             views.setOnClickPendingIntent(R.id.shuffle, shuffleIntentPending);
-            appWidgetManager.updateAppWidget(appWidgetIds[i], views);
+            appWidgetManager.updateAppWidget(appWidgetId, views);
         }
         super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
+
     public static class mediaService extends IntentService implements MediaPlayer.OnErrorListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnCompletionListener {
         private static final String LOG_TAG = mediaService.class.getSimpleName();
         private static MediaPlayer nMediaPlayer = new MediaPlayer();
         DatabaseReference databaseReference;
         Map<String, Thought> thoughts = new HashMap<>();
-        private  static String currentSource =null;
+        private static String currentSource = null;
+        private AppWidgetManager appWidgetManager;
+        private int[] appWidgetIds;
+        private RemoteViews views;
 
-        public mediaService (){
+        public mediaService() {
             super(LOG_TAG);
         }
+
         public mediaService(String name) {
             super(name);
         }
 
         @Override
         public void onCreate() {
+            appWidgetManager = AppWidgetManager.getInstance(this);
+            appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this, BolAppWidgetProvider.class));
+            views = new RemoteViews(this.getPackageName(), R.layout.widget_layout);
             nMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             nMediaPlayer.setOnPreparedListener(this);
             nMediaPlayer.setOnErrorListener(this);
@@ -102,9 +111,9 @@ public class BolAppWidgetProvider extends AppWidgetProvider {
         private String getRandom(Map map) {
             Random generator = new Random();
             Object[] values = map.values().toArray();
-
-            return (String) ((Thought)values[generator.nextInt(values.length)]).downloadUri;
+            return ((Thought) values[generator.nextInt(values.length)]).downloadUri;
         }
+
         @Override
         protected void onHandleIntent(Intent intent) {
             if (intent.getAction().equals(SHUFFLE_ACTION)) {
@@ -117,11 +126,12 @@ public class BolAppWidgetProvider extends AppWidgetProvider {
                     e.printStackTrace();
                 }
             } else if (intent.getAction().equals(PLAY_ACTION)) {
-                Log.e(LOG_TAG, String.valueOf(nMediaPlayer.isPlaying()));
+                Log.d(LOG_TAG, String.valueOf(nMediaPlayer.isPlaying()));
                 if (nMediaPlayer.isPlaying()) {
                     nMediaPlayer.pause();
+                    changeButtonResourceToPlay(true);
                 } else {
-                    Log.e(LOG_TAG, currentSource == null? "null": currentSource);
+                    Log.d(LOG_TAG, currentSource == null ? "null" : currentSource);
                     if (currentSource == null) {
                         currentSource = getRandom(thoughts);
                         try {
@@ -130,9 +140,9 @@ public class BolAppWidgetProvider extends AppWidgetProvider {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                    }
-                    else {
+                    } else {
                         nMediaPlayer.start();
+                        changeButtonResourceToPlay(false);
                     }
                 }
             }
@@ -140,20 +150,36 @@ public class BolAppWidgetProvider extends AppWidgetProvider {
 
         @Override
         public void onCompletion(MediaPlayer mediaPlayer) {
-            Log.e(LOG_TAG, "complete");
+            Log.d(LOG_TAG, "complete");
+            changeButtonResourceToPlay(true);
+        }
+
+        private void changeButtonResourceToPlay(boolean b) {
+            if (b) {
+                for (int appWidgetId : appWidgetIds) {
+                    views.setImageViewResource(R.id.play_button, R.drawable.ic_play_arrow_black_24dp);
+                    appWidgetManager.updateAppWidget(appWidgetId, views);
+                }
+            }
+            else {
+                for (int appWidgetId : appWidgetIds) {
+                    views.setImageViewResource(R.id.play_button, R.drawable.ic_pause_black_24dp);
+                    appWidgetManager.updateAppWidget(appWidgetId, views);
+                }
+            }
         }
 
         @Override
         public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
-            Log.e(LOG_TAG, String.valueOf(i)+ String.valueOf(i1));
-             return true;
+            Log.e(LOG_TAG, String.valueOf(i) + String.valueOf(i1));
+            return true;
         }
 
         @Override
         public void onPrepared(MediaPlayer mediaPlayer) {
-
             mediaPlayer.start();
             mediaPlayer.setOnCompletionListener(this);
+            changeButtonResourceToPlay(false);
         }
     }
 }
