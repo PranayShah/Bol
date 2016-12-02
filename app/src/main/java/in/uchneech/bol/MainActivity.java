@@ -68,11 +68,9 @@ public class MainActivity extends AppCompatActivity {
     }
     public void postStory (View v) {
         FirebaseAuth auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() != null) {
-            //overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+        if (auth.getCurrentUser() != null){
             startActivity(new Intent(this, RecordingActivity.class));
-        } else {
-            //overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+        } else{
             startActivityForResult(
                     AuthUI.getInstance()
                             .createSignInIntentBuilder()
@@ -87,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
-                //overridePendingTransition(R.anim.fadein, R.anim.fadeout);
                 startActivity(new Intent(this, RecordingActivity.class));
                 finish();
             } else {
