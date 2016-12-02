@@ -19,10 +19,9 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Arrays;
 
-import static com.firebase.ui.auth.ui.AcquireEmailHelper.RC_SIGN_IN;
-
 public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    private static final int RC_SIGN_IN = 10;
     private SwipeRefreshLayout mySwipeRefreshLayout;
     FirebaseDatabase firebaseDatabase;
 
