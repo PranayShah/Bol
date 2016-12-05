@@ -111,7 +111,7 @@ public class BolAppWidgetProvider extends AppWidgetProvider {
         private String getRandom(Map map) {
             Random generator = new Random();
             Object[] values = map.values().toArray();
-            return ((Thought) values[generator.nextInt(values.length)]).downloadUri;
+            return ((Thought) values[generator.nextInt(values.length)]).getDownloadUri();
         }
 
         @Override

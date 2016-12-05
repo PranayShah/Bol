@@ -31,5 +31,9 @@
                 android:resource="@xml/bol_appwidget_info" />
         </receiver>
         <service android:name=".BolAppWidgetProvider$mediaService" />
+        <provider
+            android:authorities="in.uchneech.bol.provider"
+            android:name=".database.thoughtsContentProvider"
+            android:exported="false"></provider>
     </application>
 </manifest>

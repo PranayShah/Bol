@@ -1,6 +1,12 @@
 package in.uchneech.bol;
 
+import android.app.LoaderManager;
+import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -10,24 +16,38 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
-public class MainActivity extends AppCompatActivity {
+import in.uchneech.bol.database.FeedReaderContract;
+
+public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final int RC_SIGN_IN = 10;
     private SwipeRefreshLayout mySwipeRefreshLayout;
-    FirebaseDatabase firebaseDatabase;
+    RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    BiMap<String, Thought> thoughts = HashBiMap.create();
+    private LoaderManager.LoaderCallbacks currentActivity;
+    private final ArrayList<String> keys = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        currentActivity = this;
         setContentView(R.layout.activity_main);
         mySwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
         mySwipeRefreshLayout.setOnRefreshListener(
@@ -38,31 +58,74 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
-        /*ConnectivityManager cm =
-                (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
-        if ()*/
-        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
-
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
+        mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         mRecyclerView.setHasFixedSize(true);
-
-        // use a linear layout manager
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-        firebaseDatabase = FirebaseDatabase.getInstance();
+
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference mRef = firebaseDatabase.getReference().child("thoughts");
-        RecyclerView.Adapter mAdapter = new FirebaseRecyclerAdapter<Thought, ThoughtHolder>(Thought.class, R.layout.feed_item, ThoughtHolder.class, mRef) {
+        mRef.addChildEventListener(new ChildEventListener() {
             @Override
-            public void populateViewHolder(ThoughtHolder chatMessageViewHolder, final Thought chatMessage, int position) {
-                chatMessageViewHolder.mView.findViewById(R.id.play_button).setOnClickListener(new mediaHandler(chatMessage, position));
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                thoughts.put(dataSnapshot.getKey(), dataSnapshot.getValue(Thought.class));
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                thoughts.put(dataSnapshot.getKey(), dataSnapshot.getValue(Thought.class));
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                thoughts.remove(dataSnapshot.getKey());
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        mAdapter = new FirebaseRecyclerAdapter<Thought, ThoughtHolder>(Thought.class, R.layout.feed_item, ThoughtHolder.class, mRef) {
+            @Override
+            public void populateViewHolder(final ThoughtHolder chatMessageViewHolder, final Thought chatMessage, int position) {
+                final String key = chatMessage.getKey();
+                setImage(chatMessageViewHolder, key);
+                chatMessageViewHolder.mView.findViewById(R.id.play_button).setOnClickListener(new mediaHandler(chatMessage));
+                chatMessageViewHolder.mView.findViewById(R.id.favourites_button).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (keys.contains(key) ) {
+                            String selection = FeedReaderContract.FeedEntry.COLUMN_NAME_KEY + " = ?";
+                            String[] selectionArgs = { key };
+                            getContentResolver().delete(FeedReaderContract.FeedEntry.CONTENT_URI, selection, selectionArgs);
+                        }
+                        else {
+                            ContentValues values = new ContentValues();
+                            values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_KEY, key);
+                            values.put(FeedReaderContract.FeedEntry.COLUMN_NAME_DOWNLOAD_URI, chatMessage.getDownloadUri());
+                            getContentResolver().insert(Uri.withAppendedPath(FeedReaderContract.FeedEntry.CONTENT_URI, key), values);
+                        }
+                        getLoaderManager().restartLoader(0, null, currentActivity);
+                    }
+                });
+            }
+            private void setImage(ThoughtHolder chatMessageViewHolder, String key) {
+                if (keys.contains(key) ) {
+                    ((ImageButton)chatMessageViewHolder.mView.findViewById(R.id.favourites_button)).setImageResource(R.drawable.ic_favorite_black_24dp);
+                }
+                else {
+                    ((ImageButton)chatMessageViewHolder.mView.findViewById(R.id.favourites_button)).setImageResource(R.drawable.ic_favorite_border_black_24dp);
+                }
             }
         };
         mRecyclerView.setAdapter(mAdapter);
+        getLoaderManager().initLoader(0, null, this);
     }
     public void postStory (View v) {
         FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -87,21 +150,20 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             } else {
                 Log.w (LOG_TAG, "Not signed in");
-                // user is not signed in. Maybe just wait for the user to press
-                // "sign in" again, or show a message
             }
         }
     }
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mAdapter = null;
+        mRecyclerView.setAdapter(null);
+        currentActivity = null;
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate menu from menu resource (res/menu/main)
         getMenuInflater().inflate(R.menu.main_menu, menu);
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -122,8 +184,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void refresh () {
-        firebaseDatabase.goOffline();
-        firebaseDatabase.goOnline();
+        getLoaderManager().restartLoader(0, null, this);
         mySwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
+        return new CursorLoader(this, FeedReaderContract.FeedEntry.CONTENT_URI,null, null,null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, final Cursor cursor) {
+        keys.clear();
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast()) {
+            keys.add(cursor.getString(cursor.getColumnIndex(FeedReaderContract.FeedEntry.COLUMN_NAME_KEY)));
+            cursor.moveToNext();
+        }
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
     }
 }

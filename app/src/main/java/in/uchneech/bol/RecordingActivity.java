@@ -199,7 +199,7 @@ public class RecordingActivity extends AppCompatActivity {
                         Uri downloadUrl = taskSnapshot.getDownloadUrl();
                         FirebaseAuth auth = FirebaseAuth.getInstance();
                         if (auth.getCurrentUser() != null) {
-                            ref.child("thoughts").child(key).setValue(new Thought(auth.getCurrentUser().getEmail(), auth.getCurrentUser().getUid(),uuid , downloadUrl != null ? downloadUrl.toString() : null), new DatabaseReference.CompletionListener() {
+                            ref.child("thoughts").child(key).setValue(new Thought(auth.getCurrentUser().getEmail(), auth.getCurrentUser().getUid(),uuid , downloadUrl != null ? downloadUrl.toString() : null, key), new DatabaseReference.CompletionListener() {
                                 @Override
                                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                     if (databaseError != null) {

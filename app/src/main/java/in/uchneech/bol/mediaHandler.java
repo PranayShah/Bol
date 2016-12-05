@@ -11,20 +11,18 @@ import java.io.IOException;
 class mediaHandler implements View.OnClickListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
     private static final String LOG_TAG = mediaHandler.class.getSimpleName();
     private static MediaPlayer nMediaPlayer = new MediaPlayer();
-    private Thought chatMessage;
+    private String downloadUri;
     private static String currentSource = null;
     private static ImageButton currentImageButton;
-    private int position;
     private ImageButton imageButton;
 
-    mediaHandler(Thought chatMessage, int position) {
-        this.chatMessage = chatMessage;
-        this.position = position;
+    mediaHandler(Thought chatMessage) {
+        this.downloadUri = chatMessage.getDownloadUri();
     }
     @Override
     public void onClick(View view) {
         this.imageButton = (ImageButton) view;
-        if (currentSource!=null && !chatMessage.downloadUri.contentEquals(currentSource)) {
+        if (currentSource!=null && !downloadUri.contentEquals(currentSource)) {
             currentImageButton.setImageResource(R.drawable.ic_play_arrow_black_24dp);
         }
         currentImageButton = (ImageButton) view;
@@ -33,17 +31,17 @@ class mediaHandler implements View.OnClickListener, MediaPlayer.OnCompletionList
         nMediaPlayer.setOnErrorListener(this);
         Log.i(LOG_TAG, Boolean.toString(nMediaPlayer.isPlaying()));
         if (currentSource != null){Log.i(LOG_TAG, currentSource);}
-        Log.i(LOG_TAG, chatMessage.downloadUri);
+        Log.i(LOG_TAG, downloadUri);
         if (!nMediaPlayer.isPlaying()) {
-            if (currentSource!=null && chatMessage.downloadUri.contentEquals(currentSource)) {
+            if (currentSource!=null && downloadUri.contentEquals(currentSource)) {
                 imageButton.setImageResource(R.drawable.ic_pause_black_24dp);
                 nMediaPlayer.start();
             }
             else {
                 nMediaPlayer.reset();
                 try {
-                    nMediaPlayer.setDataSource(chatMessage.downloadUri);
-                    currentSource = chatMessage.downloadUri;
+                    nMediaPlayer.setDataSource(downloadUri);
+                    currentSource = downloadUri;
                     nMediaPlayer.prepareAsync();
                     imageButton.setImageResource(R.drawable.ic_pause_black_24dp);
                 } catch (IOException e) {
@@ -52,15 +50,15 @@ class mediaHandler implements View.OnClickListener, MediaPlayer.OnCompletionList
             }
         }
         else {
-            if (currentSource!=null && chatMessage.downloadUri.contentEquals(currentSource)) {
+            if (currentSource!=null && downloadUri.contentEquals(currentSource)) {
                 imageButton.setImageResource(R.drawable.ic_play_arrow_black_24dp);
                 nMediaPlayer.pause();
             }
             else {
                 nMediaPlayer.reset();
                 try {
-                    nMediaPlayer.setDataSource(chatMessage.downloadUri);
-                    currentSource = chatMessage.downloadUri;
+                    nMediaPlayer.setDataSource(downloadUri);
+                    currentSource = downloadUri;
                     nMediaPlayer.prepareAsync();
                     imageButton.setImageResource(R.drawable.ic_pause_black_24dp);
                 } catch (IOException e) {
@@ -73,7 +71,6 @@ class mediaHandler implements View.OnClickListener, MediaPlayer.OnCompletionList
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
-        Log.e(LOG_TAG, "complete");
         imageButton.setImageResource(R.drawable.ic_play_arrow_black_24dp);
     }
 

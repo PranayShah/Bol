@@ -2,19 +2,21 @@ package in.uchneech.bol;
 
 
 public class Thought {
-    String by;
-    String downloadUri;
-    String uid;
-    String uuid;
+    private String by;
+    private String downloadUri;
+    private String uid;
+    private String uuid;
+    private String key;
     public Thought () {
 
     }
 
-    public Thought(String by, String uid, String uuid, String downloadUri) {
+    public Thought(String by, String uid, String uuid, String downloadUri, String key) {
         this.by = by;
         this.downloadUri = downloadUri;
         this.uid = uid;
         this.uuid = uuid;
+        this.key = key;
     }
 
     String getBy() {
@@ -32,5 +34,9 @@ public class Thought {
 
     String getUuid() {
         return uuid;
+    }
+
+    String getKey() {
+        return key;
     }
 }
