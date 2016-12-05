@@ -1,5 +1,6 @@
 package in.uchneech.bol;
 
+import android.app.ActivityOptions;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
@@ -12,6 +13,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Fade;
+import android.transition.Transition;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,7 +49,10 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().getAttributes().windowAnimations = R.style.Fade;
+        Transition ts = new Fade();
+        ts.setDuration(1000);
+        getWindow().setEnterTransition(ts);
+        getWindow().setExitTransition(ts);
         currentActivity = this;
         setContentView(R.layout.activity_main);
         mySwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
@@ -130,7 +136,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     public void postStory (View v) {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
-            startActivity(new Intent(this, RecordingActivity.class));
+            Intent intent = new Intent(this, RecordingActivity.class);
+            startActivity(intent,
+                     ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         } else {
             startActivityForResult(
                     AuthUI.getInstance()

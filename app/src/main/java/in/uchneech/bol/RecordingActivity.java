@@ -10,6 +10,8 @@ import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.Fade;
+import android.transition.Transition;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,9 +48,10 @@ public class RecordingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Get a support ActionBar corresponding to this toolbar
-        //overridePendingTransition(R.anim.fadein, R.anim.fadeout);
-        getWindow().getAttributes().windowAnimations = R.style.Fade;
+        Transition ts = new Fade();
+        ts.setDuration(1000);
+        getWindow().setEnterTransition(ts);
+        getWindow().setExitTransition(ts);
         ActionBar ab = getSupportActionBar();
 
         // Enable the Up button
@@ -92,7 +95,14 @@ public class RecordingActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void onRecord(boolean start) {
