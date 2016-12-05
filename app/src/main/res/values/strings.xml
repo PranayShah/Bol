@@ -16,4 +16,5 @@
     <string name="start_playing">Start playing</string>
     <string name="empty_view_text">No stories yet</string>
     <string name="mark_favourite">Mark it a favourite</string>
+    <string name="record_audio_denied_permissio">The world can\'t hear you without these permissions</string>
 </resources>

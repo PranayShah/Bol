@@ -1,14 +1,19 @@
 package in.uchneech.bol;
 
+import android.Manifest;
 import android.app.ActivityOptions;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -45,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     HashMap<String, Thought> thoughts = new HashMap<>();
     private LoaderManager.LoaderCallbacks currentActivity;
     private final ArrayList<String> keys = new ArrayList<>();
+    private final int REQUEST_RECORD_AUDIO_CODE = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +141,38 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         getLoaderManager().initLoader(0, null, this);
     }
     public void postStory (View v) {
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
+        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+            startRecordingActivity();
+        }
+        else if (permissionCheck == PackageManager.PERMISSION_DENIED){
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.RECORD_AUDIO)) {
+                Toast.makeText(this, R.string.record_audio_denied_permissio, Toast.LENGTH_LONG).show();
+            }
+            else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.RECORD_AUDIO},
+                        REQUEST_RECORD_AUDIO_CODE);
+            }
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_RECORD_AUDIO_CODE: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    startRecordingActivity();
+                } else {
+                    Toast.makeText(this, R.string.record_audio_denied_permissio, Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    }
+
+    private void startRecordingActivity () {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
             Intent intent = new Intent(this, RecordingActivity.class);
