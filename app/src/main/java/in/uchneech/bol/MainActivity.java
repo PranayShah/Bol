@@ -20,8 +20,6 @@ import android.widget.ImageButton;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -31,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import in.uchneech.bol.database.FeedReaderContract;
 
@@ -40,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     private SwipeRefreshLayout mySwipeRefreshLayout;
     RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
-    BiMap<String, Thought> thoughts = HashBiMap.create();
+    HashMap<String, Thought> thoughts = new HashMap<>();
     private LoaderManager.LoaderCallbacks currentActivity;
     private final ArrayList<String> keys = new ArrayList<>();
 
