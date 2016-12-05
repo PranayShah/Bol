@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -215,6 +216,9 @@ public class RecordingActivity extends AppCompatActivity {
                                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                     if (databaseError != null) {
                                         System.out.println("Data could not be saved. " + databaseError.getMessage());
+                                    }
+                                    else {
+                                        Toast.makeText(getApplicationContext(), R.string.upload_success, Toast.LENGTH_LONG).show();
                                     }
                                 }
                             });

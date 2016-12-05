@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
         else if (permissionCheck == PackageManager.PERMISSION_DENIED){
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.RECORD_AUDIO)) {
-                Toast.makeText(this, R.string.record_audio_denied_permissio, Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.record_audio_rationale, Toast.LENGTH_LONG).show();
             }
             else {
                 ActivityCompat.requestPermissions(this,
@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     startRecordingActivity();
                 } else {
-                    Toast.makeText(this, R.string.record_audio_denied_permissio, Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.record_audio_denied_permission, Toast.LENGTH_LONG).show();
                 }
             }
         }
