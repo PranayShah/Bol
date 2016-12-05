@@ -47,6 +47,8 @@ public class RecordingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Get a support ActionBar corresponding to this toolbar
+        //overridePendingTransition(R.anim.fadein, R.anim.fadeout);
+        getWindow().getAttributes().windowAnimations = R.style.Fade;
         ActionBar ab = getSupportActionBar();
 
         // Enable the Up button
