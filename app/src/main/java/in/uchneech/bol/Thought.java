@@ -2,11 +2,11 @@ package in.uchneech.bol;
 
 
 public class Thought {
-    private String by;
-    private String downloadUri;
-    private String uid;
-    private String uuid;
-    private String key;
+    public String by;
+    public String downloadUri;
+    public String uid;
+    public String uuid;
+    public String key;
     public Thought () {
 
     }
