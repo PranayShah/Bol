@@ -71,12 +71,6 @@ public class RecordingActivity extends AppCompatActivity {
                             ViewGroup.LayoutParams.WRAP_CONTENT,
                             ViewGroup.LayoutParams.WRAP_CONTENT,
                             0));
-            PlayButton mPlayButton = new PlayButton(this);
-            ll.addView(mPlayButton,
-                    new LinearLayout.LayoutParams(
-                            ViewGroup.LayoutParams.WRAP_CONTENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT,
-                            0));
             mUploadButton = new Button(this);
             mUploadButton.setText(R.string.upload);
             ll.addView(mUploadButton,
@@ -113,14 +107,6 @@ public class RecordingActivity extends AppCompatActivity {
         }
     }
 
-    private void onPlay(boolean start) {
-        if (start) {
-            startPlaying();
-        } else {
-            stopPlaying();
-        }
-    }
-
     @Override
     public void onPause() {
         super.onPause();
@@ -133,22 +119,6 @@ public class RecordingActivity extends AppCompatActivity {
             mPlayer.release();
             mPlayer = null;
         }
-    }
-
-    private void startPlaying() {
-        mPlayer = new MediaPlayer();
-        try {
-            mPlayer.setDataSource(mFileName);
-            mPlayer.prepare();
-            mPlayer.start();
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "prepare() failed");
-        }
-    }
-
-    private void stopPlaying() {
-        mPlayer.release();
-        mPlayer = null;
     }
 
     private void startRecording() {
@@ -248,28 +218,6 @@ public class RecordingActivity extends AppCompatActivity {
         public RecordButton(Context ctx) {
             super(ctx);
             setText(R.string.start_recording);
-            setOnClickListener(clicker);
-        }
-    }
-
-    class PlayButton extends Button {
-        boolean mStartPlaying = true;
-
-        OnClickListener clicker = new OnClickListener() {
-            public void onClick(View v) {
-                onPlay(mStartPlaying);
-                if (mStartPlaying) {
-                    setText(R.string.stop_playing);
-                } else {
-                    setText(R.string.start_playing);
-                }
-                mStartPlaying = !mStartPlaying;
-            }
-        };
-
-        public PlayButton(Context ctx) {
-            super(ctx);
-            setText(R.string.start_playing);
             setOnClickListener(clicker);
         }
     }
