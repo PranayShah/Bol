@@ -1,4 +1,4 @@
-package in.uchneech.bol.database;
+package xyz.artiv.bol.database;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;

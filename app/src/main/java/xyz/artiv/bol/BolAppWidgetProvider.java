@@ -1,4 +1,4 @@
-package in.uchneech.bol;
+package xyz.artiv.bol;
 
 import android.app.IntentService;
 import android.app.PendingIntent;
@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.Random;
 
 public class BolAppWidgetProvider extends AppWidgetProvider {
-    private static final String SHUFFLE_ACTION = "in.uchneech.bol.SHUFFLE_ACTION";
-    private static final String PLAY_ACTION = "in.uchneech.bol.PLAY_ACTION";
+    private static final String SHUFFLE_ACTION = "xyz.artiv.bol.SHUFFLE_ACTION";
+    private static final String PLAY_ACTION = "xyz.artiv.bol.PLAY_ACTION";
     static RemoteViews views;
     @Override
     public void onEnabled(Context context) {

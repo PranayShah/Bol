@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="in.uchneech.bol">
+    package="xyz.artiv.bol">
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <application
         android:name="Bol"
@@ -31,7 +31,7 @@
         </receiver>
         <service android:name=".BolAppWidgetProvider$mediaService" />
         <provider
-            android:authorities="in.uchneech.bol.provider"
+            android:authorities="xyz.artiv.bol.provider"
             android:name=".database.thoughtsContentProvider"
             android:exported="false"></provider>
     </application>

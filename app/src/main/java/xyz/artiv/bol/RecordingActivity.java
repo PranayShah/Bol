@@ -1,4 +1,4 @@
-package in.uchneech.bol;
+package xyz.artiv.bol;
 
 import android.content.Context;
 import android.content.SharedPreferences;

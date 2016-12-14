@@ -15,22 +15,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "656271675165-d3bpoe50ig3fndnum9a237ib2matc911.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "in.uchneech.bol",
-            "certificate_hash": "84C3ECA496E2FFBC2DF2F9FA377782863FA36157"
-          }
-        },
-        {
-          "client_id": "656271675165-sfkrnh80psgfon1gocu7qf69979i3qpk.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "in.uchneech.bol",
-            "certificate_hash": "C977A832164FA035995A2AF4F116850EBC57DC0A"
-          }
-        },
-        {
           "client_id": "656271675165-rkrt6bkmqhtvanj2heebtubpsuj2u8i3.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -47,6 +31,42 @@
         "appinvite_service": {
           "status": 1,
           "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:656271675165:android:f8f1b15bc679be2a",
+        "android_client_info": {
+          "package_name": "xyz.artiv.bol"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "656271675165-rkrt6bkmqhtvanj2heebtubpsuj2u8i3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKnP7ii8htquEwU05I4fdLfJp5e7Q2Tlc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "656271675165-rkrt6bkmqhtvanj2heebtubpsuj2u8i3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

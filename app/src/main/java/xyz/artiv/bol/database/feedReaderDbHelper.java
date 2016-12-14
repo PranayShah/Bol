@@ -1,10 +1,10 @@
-package in.uchneech.bol.database;
+package xyz.artiv.bol.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import in.uchneech.bol.database.FeedReaderContract.FeedEntry;
+import xyz.artiv.bol.database.FeedReaderContract.FeedEntry;
 
 final class feedReaderDbHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;

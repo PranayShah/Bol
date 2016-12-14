@@ -1,4 +1,4 @@
-package in.uchneech.bol;
+package xyz.artiv.bol;
 
 import android.Manifest;
 import android.app.ActivityOptions;
@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import in.uchneech.bol.database.FeedReaderContract;
+import xyz.artiv.bol.database.FeedReaderContract;
 
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();

@@ -1,4 +1,4 @@
-package in.uchneech.bol.database;
+package xyz.artiv.bol.database;
 
 
 import android.net.Uri;
@@ -7,7 +7,7 @@ import android.provider.BaseColumns;
 public final class FeedReaderContract {
     private FeedReaderContract() {}
 
-    static final String CONTENT_AUTHORITY = "in.uchneech.bol.provider";
+    static final String CONTENT_AUTHORITY = "xyz.artiv.bol.provider";
 
     private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 

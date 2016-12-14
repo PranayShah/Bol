@@ -1,4 +1,4 @@
-package in.uchneech.bol;
+package xyz.artiv.bol;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
