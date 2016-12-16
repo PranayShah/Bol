@@ -10,25 +10,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
         android:contentDescription="@string/play_story"/>
-    <ImageButton
-        android:id="@+id/upvotes_button"
-        android:tint="@color/colorAccent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/tw__transparent"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:contentDescription="@string/upvotes"/>
-    <ImageButton
-        android:id="@+id/downvotes_button"
-        android:tint="@color/colorAccent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/tw__transparent"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:contentDescription="@string/downvotes"/>
+
     <ImageButton
         android:id="@+id/favourites_button"
         android:tint="@color/colorAccent"
@@ -36,6 +20,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
         android:contentDescription="@string/mark_favourite"/>
+    <ImageButton
+        android:id="@+id/reply"
+        android:src="@drawable/ic_reply_black_24dp"
+        android:tint="@color/colorAccent"
+        android:background="@color/tw__transparent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:contentDescription="@string/reply_thought"
+        android:layout_alignParentRight="true" />
 </RelativeLayout>

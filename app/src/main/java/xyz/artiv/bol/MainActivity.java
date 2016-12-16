@@ -1,6 +1,7 @@
 package xyz.artiv.bol;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.LoaderManager;
 import android.content.ContentValues;
@@ -45,6 +46,7 @@ import xyz.artiv.bol.database.FeedReaderContract;
 public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
     private static final int RC_SIGN_IN = 10;
+    static final String PARENT_THOUGHT = "xyz.artiv.bol.PARENT_THOUGHT";
     private SwipeRefreshLayout mySwipeRefreshLayout;
     RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -127,6 +129,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                         getLoaderManager().restartLoader(0, null, currentActivity);
                     }
                 });
+                chatMessageViewHolder.mView.findViewById(R.id.reply).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getApplicationContext(), RecordingActivity.class);
+                        intent.putExtra(PARENT_THOUGHT, chatMessage.getKey());
+                        startActivity(intent,
+                                ActivityOptions.makeSceneTransitionAnimation((Activity) currentActivity).toBundle());
+                    }
+                });
             }
             private void setImage(ThoughtHolder chatMessageViewHolder, String key) {
                 if (keys.contains(key) ) {
@@ -176,13 +187,14 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
             Intent intent = new Intent(this, RecordingActivity.class);
+            intent.putExtra(PARENT_THOUGHT, "");
             startActivity(intent,
                      ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         } else {
             startActivityForResult(
                     AuthUI.getInstance()
                             .createSignInIntentBuilder()
-                            .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
+                            .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
                             .build(),
                     RC_SIGN_IN);
         }

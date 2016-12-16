@@ -19,4 +19,5 @@
     <string name="record_audio_denied_permission">The world can\'t hear you without these permissions</string>
     <string name="upload_success">You can be heard now!</string>
     <string name="record_audio_rationale">Need this permission to upload your story</string>
+    <string name="reply_thought">Reply to this thought</string>
 </resources>

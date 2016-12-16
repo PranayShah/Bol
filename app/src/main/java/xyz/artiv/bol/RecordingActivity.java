@@ -36,6 +36,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
+import static xyz.artiv.bol.MainActivity.PARENT_THOUGHT;
+
 public class RecordingActivity extends AppCompatActivity {
     private static final String LOG_TAG = "AudioRecordTest";
     private static String mFileName = null;
@@ -207,17 +209,18 @@ public class RecordingActivity extends AppCompatActivity {
                 }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, and download URL.
+                        final String parentKey = getIntent().getStringExtra(PARENT_THOUGHT);
                         Uri downloadUrl = taskSnapshot.getDownloadUrl();
                         FirebaseAuth auth = FirebaseAuth.getInstance();
                         if (auth.getCurrentUser() != null) {
-                            ref.child("thoughts").child(key).setValue(new Thought(auth.getCurrentUser().getEmail(), auth.getCurrentUser().getUid(),uuid , downloadUrl != null ? downloadUrl.toString() : null, key), new DatabaseReference.CompletionListener() {
+                            ref.child("thoughts").child(key).setValue(new Thought(auth.getCurrentUser().getEmail(), auth.getCurrentUser().getUid(),uuid , downloadUrl != null ? downloadUrl.toString() : null, key, parentKey), new DatabaseReference.CompletionListener() {
                                 @Override
                                 public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                                     if (databaseError != null) {
                                         System.out.println("Data could not be saved. " + databaseError.getMessage());
                                     }
                                     else {
+                                        ref.child("thoughts").child(parentKey).child("children").child(key).setValue(true);
                                         Toast.makeText(getApplicationContext(), R.string.upload_success, Toast.LENGTH_LONG).show();
                                     }
                                 }
