@@ -1,7 +1,10 @@
 package xyz.artiv.bol;
 
+import android.app.Activity;
+import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -11,6 +14,7 @@ import java.io.IOException;
 class mediaHandler implements View.OnClickListener, MediaPlayer.OnCompletionListener, MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
     private static final String LOG_TAG = mediaHandler.class.getSimpleName();
     private static MediaPlayer nMediaPlayer = new MediaPlayer();
+    private final Thought chatMessage;
     private String downloadUri;
     private static String currentSource = null;
     private static ImageButton currentImageButton;
@@ -18,9 +22,11 @@ class mediaHandler implements View.OnClickListener, MediaPlayer.OnCompletionList
 
     mediaHandler(Thought chatMessage) {
         this.downloadUri = chatMessage.getDownloadUri();
+        this.chatMessage = chatMessage;
     }
     @Override
     public void onClick(View view) {
+        Context currentActivity = view.getContext();
         this.imageButton = (ImageButton) view;
         if (currentSource!=null && !downloadUri.contentEquals(currentSource)) {
             currentImageButton.setImageResource(R.drawable.ic_play_arrow_black_24dp);
@@ -29,9 +35,6 @@ class mediaHandler implements View.OnClickListener, MediaPlayer.OnCompletionList
         nMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
         nMediaPlayer.setOnPreparedListener(this);
         nMediaPlayer.setOnErrorListener(this);
-        Log.i(LOG_TAG, Boolean.toString(nMediaPlayer.isPlaying()));
-        if (currentSource != null){Log.i(LOG_TAG, currentSource);}
-        Log.i(LOG_TAG, downloadUri);
         if (!nMediaPlayer.isPlaying()) {
             if (currentSource!=null && downloadUri.contentEquals(currentSource)) {
                 imageButton.setImageResource(R.drawable.ic_pause_black_24dp);
@@ -47,6 +50,10 @@ class mediaHandler implements View.OnClickListener, MediaPlayer.OnCompletionList
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            }
+            if (chatMessage.getChildren() != null) {
+                RecyclerView repliesRecyclerView = (RecyclerView) ((Activity) currentActivity).findViewById(R.id.replies_list);
+                repliesRecyclerView.setVisibility(View.VISIBLE);
             }
         }
         else {

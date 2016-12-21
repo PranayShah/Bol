@@ -34,11 +34,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 
 import xyz.artiv.bol.database.FeedReaderContract;
@@ -77,9 +77,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         mRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
-
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference mRef = firebaseDatabase.getReference().child("thoughts");
+        final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        final Query mRef = firebaseDatabase.getReference().child("thoughts").orderByChild("parent").equalTo("");
         mRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -106,9 +105,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
             }
         });
-        mAdapter = new FirebaseRecyclerAdapter<Thought, ThoughtHolder>(Thought.class, R.layout.feed_item, ThoughtHolder.class, mRef) {
+        class myRecycler extends FirebaseRecyclerAdapter<Thought, ThoughtHolder> {
+            public myRecycler(Class<Thought> modelClass, int modelLayout, Class<ThoughtHolder> viewHolderClass, Query ref) {
+                super(modelClass, modelLayout, viewHolderClass, ref);
+            }
+
             @Override
-            public void populateViewHolder(final ThoughtHolder chatMessageViewHolder, final Thought chatMessage, int position) {
+            protected void populateViewHolder(ThoughtHolder chatMessageViewHolder, final Thought chatMessage, int position) {
                 final String key = chatMessage.getKey();
                 setImage(chatMessageViewHolder, key);
                 chatMessageViewHolder.mView.findViewById(R.id.play_button).setOnClickListener(new mediaHandler(chatMessage));
@@ -138,6 +141,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                                 ActivityOptions.makeSceneTransitionAnimation((Activity) currentActivity).toBundle());
                     }
                 });
+                RecyclerView repliesRecyclerView = (RecyclerView) chatMessageViewHolder.mView.findViewById(R.id.replies_list);
+                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(chatMessageViewHolder.mView.getContext());
+                repliesRecyclerView.setLayoutManager(mLayoutManager);
+                Query replyRef = FirebaseDatabase.getInstance().getReference().child("thoughts").orderByChild("parent").equalTo(chatMessage.getKey());
+                repliesRecyclerView.setAdapter(new FirebaseRecyclerAdapter<Thought, ThoughtHolder>(Thought.class, R.layout.feed_item, ThoughtHolder.class, replyRef) {
+                    @Override
+                    protected void populateViewHolder(ThoughtHolder viewHolder, Thought model, int position) {
+                        viewHolder.mView.findViewById(R.id.play_button).setOnClickListener(new mediaHandler(model));
+                    }
+                });
             }
             private void setImage(ThoughtHolder chatMessageViewHolder, String key) {
                 if (keys.contains(key) ) {
@@ -147,7 +160,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     ((ImageButton)chatMessageViewHolder.mView.findViewById(R.id.favourites_button)).setImageResource(R.drawable.ic_favorite_border_black_24dp);
                 }
             }
-        };
+        }
+        mAdapter = new myRecycler(Thought.class, R.layout.feed_item, ThoughtHolder.class, mRef);
         mRecyclerView.setAdapter(mAdapter);
         getLoaderManager().initLoader(0, null, this);
     }
@@ -187,14 +201,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
             Intent intent = new Intent(this, RecordingActivity.class);
-            intent.putExtra(PARENT_THOUGHT, "");
             startActivity(intent,
                      ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
         } else {
             startActivityForResult(
                     AuthUI.getInstance()
                             .createSignInIntentBuilder()
-                            .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
+                            .setProviders(Collections.singletonList(new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
                             .build(),
                     RC_SIGN_IN);
         }
