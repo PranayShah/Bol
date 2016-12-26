@@ -20,4 +20,6 @@
     <string name="upload_success">You can be heard now!</string>
     <string name="record_audio_rationale">Need this permission to upload your story</string>
     <string name="reply_thought">Reply to this thought</string>
+    <string name="facebook_application_id" translatable="false">475473175983005</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb475473175983005</string>
 </resources>
